@@ -1,0 +1,713 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Мария — монтаж видео</title>
+<!--
+  САЙТ МОНТАЖЁРА — версия 9
+  Публикация: загрузить index.html вместе с папкой videos/ (GitHub Pages, Netlify и т. п.).
+  Ролики — список VIDEOS в конце кода. Первые три также показываются в телефоне на первом экране.
+-->
+</head>
+<body style="margin:0;background:#fff">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+
+<style>
+#mx{
+  /* палитра: белый — фон, пудра/персик — мягкие акценты, мокко — кнопки и один тёмный элемент, графит — только текст */
+  --white:#FFFFFF; --powder:#FBE4DC; --peach:#F9D0BE; --taupe:#C4A89A; --mocha:#6C5952; --mocha-d:#5A4943;
+  --ink:#3C3B39; --muted:#75615A; --line:rgba(108,89,82,.16); --line-2:rgba(108,89,82,.28);
+  --serif:"Cormorant Garamond","Times New Roman",serif; --sans:"Manrope","Helvetica Neue",Arial,sans-serif;
+  background:var(--white); color:var(--ink); font-family:var(--sans); font-size:17px; line-height:1.6;
+  -webkit-font-smoothing:antialiased; overflow-x:hidden; position:relative;
+  font-variant-numeric:lining-nums; font-feature-settings:"lnum" 1;
+}
+#mx *,#mx *::before,#mx *::after{box-sizing:border-box;margin:0;padding:0}
+#mx a{color:inherit;text-decoration:none}
+#mx :focus-visible{outline:2px solid var(--mocha);outline-offset:3px;border-radius:8px}
+#mx .w{max-width:1200px;margin:0 auto;padding:0 28px}
+#mx section{padding:120px 0;position:relative}
+
+/* зерно — только на цветных плоскостях, белый остаётся чистым */
+#mx .grain{position:relative;isolation:isolate}
+#mx .grain::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:-1;opacity:.5;mix-blend-mode:multiply;border-radius:inherit;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .35 0 0 0 0 .32 0 0 0 .16 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* «субтитр» — фирменная плашка для ключевых слов, как подписи в рилс */
+#mx mark{display:inline-block;background:var(--peach);color:inherit;line-height:1;padding:.02em .18em .1em;margin:.08em 0 .02em;border-radius:.16em}
+#mx .dark mark,#mx .plan.top mark{background:rgba(249,208,190,.22)}
+
+#mx .h2{font-family:var(--serif);font-weight:500;font-size:clamp(42px,5.6vw,80px);line-height:1;letter-spacing:-.02em;max-width:15ch}
+#mx .kicker{display:inline-flex;align-items:center;gap:10px;color:var(--mocha);font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;margin-bottom:22px}
+#mx .kicker::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--peach);box-shadow:0 0 0 1px var(--taupe)}
+#mx .head{display:flex;justify-content:space-between;align-items:flex-end;gap:32px;flex-wrap:wrap;margin-bottom:60px}
+#mx .head p{color:var(--muted);max-width:38ch}
+
+#mx .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font-weight:800;font-size:15px;padding:17px 30px;border-radius:999px;transition:background .2s ease,color .2s ease,transform .2s ease,box-shadow .2s ease;cursor:pointer}
+#mx .btn:hover{transform:translateY(-2px)}
+#mx .btn-ink{background:var(--mocha);color:var(--white);box-shadow:0 10px 24px rgba(108,89,82,.22)}
+#mx .btn-ink:hover{background:var(--mocha-d)}
+#mx .btn-line{border:1px solid var(--line-2);color:var(--ink);background:var(--white)}
+#mx .btn-line:hover{border-color:var(--mocha);background:var(--mocha);color:var(--white)}
+#mx .btn-peach{background:var(--peach);color:var(--ink)}
+#mx .btn-peach:hover{background:var(--white)}
+#mx .btn .arr{display:inline-block;transition:transform .2s ease}
+#mx .btn:hover .arr{transform:translateX(3px)}
+#mx .rec{width:8px;height:8px;border-radius:50%;background:#D0705A;box-shadow:0 0 0 4px rgba(208,112,90,.16);animation:mxBlink 1.6s ease-in-out infinite;flex:none}
+@keyframes mxBlink{50%{opacity:.35}}
+
+/* шапка */
+#mx .nav{display:flex;justify-content:space-between;align-items:center;padding:24px 0}
+#mx .logo{font-family:var(--serif);font-size:30px;font-weight:600;line-height:1}
+#mx .logo small{display:block;font-family:var(--sans);font-size:11px;font-weight:800;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-top:4px}
+#mx .links{display:flex;gap:34px;font-size:15px;font-weight:700}
+#mx .links a{color:var(--muted);transition:color .2s}
+#mx .links a:hover{color:var(--ink)}
+#mx .nav .btn{padding:12px 22px}
+
+/* первый экран */
+#mx .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;padding:40px 0 20px}
+#mx .badge{display:inline-flex;align-items:center;gap:10px;font-size:14px;font-weight:700;border:1px solid var(--line);border-radius:999px;padding:8px 16px;margin-bottom:30px;background:var(--white)}
+#mx h1{font-family:var(--serif);font-weight:500;font-size:clamp(50px,6.4vw,96px);line-height:.95;letter-spacing:-.025em}
+#mx h1 mark{font-style:italic;padding:.04em .16em .1em;margin:.26em 0 -.14em}
+#mx .hero p{color:var(--muted);font-size:19px;max-width:44ch;margin:30px 0 40px}
+#mx .acts{display:flex;flex-wrap:wrap;gap:12px 22px;align-items:center}
+#mx .acts .txt{font-weight:800;font-size:15px;border-bottom:1px solid var(--taupe);padding-bottom:2px;transition:border-color .2s}
+#mx .acts .txt:hover{border-color:var(--mocha)}
+#mx .proof{display:grid;grid-template-columns:repeat(3,auto);justify-content:start;column-gap:28px;margin-top:44px;padding-top:24px;border-top:1px solid var(--line);font-size:14px;color:var(--muted);max-width:560px}
+#mx .proof > div{display:flex;flex-direction:column;align-items:center;text-align:center}
+#mx .proof > div + div{border-left:1px solid var(--line);padding-left:28px}
+#mx .proof b{display:block;font-family:var(--serif);font-weight:500;font-size:30px;line-height:1;color:var(--ink);margin:0 0 6px}
+
+/* телефон с роликом */
+#mx .stage{position:relative;height:640px}
+#mx .blob{position:absolute;left:50%;top:50%;width:520px;height:520px;margin:-260px 0 0 -260px;border-radius:50%;background:radial-gradient(circle at 40% 35%,var(--powder) 0%,var(--powder) 45%,rgba(251,228,220,0) 70%)}
+#mx .back{position:absolute;top:80px;width:220px;aspect-ratio:9/16;border-radius:26px;background-size:cover;background-position:center;box-shadow:0 24px 50px rgba(108,89,82,.14);border:6px solid var(--white)}
+#mx .back.l{left:10px;transform:rotate(-8deg)}
+#mx .back.r{right:10px;transform:rotate(8deg)}
+#mx .phone{position:absolute;left:50%;top:0;margin-left:-150px;width:300px;height:620px;border-radius:46px;background:var(--mocha-d);padding:10px;box-shadow:0 50px 90px rgba(108,89,82,.28),inset 0 0 0 1px rgba(255,255,255,.08);z-index:2}
+#mx .screen{position:relative;height:100%;border-radius:37px;overflow:hidden;background:linear-gradient(170deg,#F9D0BE 0%,#E3BCAB 45%,#A88A7D 100%);background-size:cover;background-position:center}
+#mx .screen::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(90,73,67,.2),transparent 22%,transparent 55%,rgba(90,73,67,.55))}
+#mx .prog{position:absolute;top:16px;left:16px;right:16px;height:3px;border-radius:2px;background:rgba(255,255,255,.35);z-index:2;overflow:hidden}
+#mx .prog i{position:absolute;inset:0;width:0;background:#fff;animation:mxProg 6s linear .5s infinite}
+@keyframes mxProg{to{width:100%}}
+#mx .scr-top{position:absolute;top:30px;left:18px;right:18px;display:flex;justify-content:space-between;color:#fff;font-weight:800;font-size:15px;z-index:2}
+#mx .cap{position:absolute;left:18px;right:64px;bottom:150px;z-index:2;display:flex;flex-direction:column;align-items:flex-start;gap:4px}
+#mx .cap span{background:#fff;color:var(--ink);font-weight:800;font-size:19px;line-height:1.2;padding:4px 10px;border-radius:6px;transform-origin:left;animation:mxPop .5s cubic-bezier(.2,1.4,.4,1) both}
+#mx .cap span:nth-child(2){animation-delay:.9s;background:var(--peach)}
+@keyframes mxPop{from{opacity:0;transform:scale(.6)}}
+#mx .side{position:absolute;right:14px;bottom:150px;display:grid;gap:18px;z-index:2}
+#mx .side i{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.25);backdrop-filter:blur(6px);display:block}
+#mx .who{position:absolute;left:18px;right:18px;bottom:26px;color:#fff;z-index:2;font-size:14px}
+#mx .who b{display:block;font-size:15px}
+#mx .who span{opacity:.85}
+#mx .chip{position:absolute;z-index:3;background:var(--white);border:1px solid var(--line);border-radius:999px;padding:10px 16px;font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px;box-shadow:0 14px 30px rgba(108,89,82,.12);white-space:nowrap;animation:mxFloat 5s ease-in-out infinite}
+#mx .chip::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--peach);box-shadow:0 0 0 1px var(--taupe)}
+#mx .chip.a{left:-20px;top:140px}
+#mx .chip.b{right:-24px;top:300px;animation-delay:-1.6s}
+#mx .chip.c{left:0;bottom:80px;animation-delay:-3.2s}
+@keyframes mxFloat{50%{transform:translateY(-6px)}}
+
+/* бегущая строка форматов */
+#mx .ticker{background:var(--mocha);color:var(--white);overflow:hidden;padding:22px 0;margin-top:80px}
+#mx .ticker-track{display:flex;align-items:center;gap:40px;width:max-content;animation:mxMq 34s linear infinite}
+#mx .ticker span{font-family:var(--serif);font-style:italic;font-size:clamp(30px,3.8vw,50px);line-height:1;white-space:nowrap}
+#mx .ticker i{width:9px;height:9px;border-radius:50%;background:var(--peach);flex:none}
+@keyframes mxMq{to{transform:translateX(var(--sh,-50%))}}
+
+/* работы */
+#mx .works{background:var(--powder)}
+#mx .works .head p{color:#6A5750}
+#mx .mq{overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent);mask-image:linear-gradient(90deg,transparent,#000 5%,#000 95%,transparent)}
+#mx .mq-track{display:flex;gap:18px;width:max-content;animation:mxMq 45s linear infinite;padding:8px 0 12px}
+#mx .mq:hover .mq-track{animation-play-state:paused}
+#mx .reel{position:relative;width:230px;aspect-ratio:9/16;border-radius:24px;overflow:hidden;flex:none;background-size:cover;background-position:center;transition:transform .3s ease,box-shadow .3s ease;border:5px solid var(--white);box-shadow:0 14px 30px rgba(108,89,82,.12)}
+#mx a.reel:hover{transform:translateY(-6px);box-shadow:0 22px 40px rgba(108,89,82,.2)}
+#mx .reel::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 50%,rgba(60,59,57,.55))}
+#mx .reel .t{position:absolute;left:14px;right:14px;bottom:42px;z-index:2;color:#fff;font-weight:800;font-size:16px;line-height:1.25}
+#mx .reel .v{position:absolute;left:14px;bottom:16px;z-index:2;color:#fff;font-size:13px;font-weight:700;opacity:.9}
+#mx .reel .pl{position:absolute;top:12px;right:12px;z-index:2;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.9);display:grid;place-items:center}
+#mx .reel .pl::after{content:"";margin-left:3px;border-left:10px solid var(--mocha);border-top:6px solid transparent;border-bottom:6px solid transparent}
+#mx .g0{background-image:linear-gradient(165deg,#F9D0BE,#D9B5A6)}
+#mx .g1{background-image:linear-gradient(165deg,#E9CFC4,#B79C90)}
+#mx .g2{background-image:linear-gradient(165deg,#F6D9CC,#C4A89A)}
+#mx .g3{background-image:linear-gradient(165deg,#D8BBAE,#8F766B)}
+#mx .g4{background-image:linear-gradient(165deg,#FBE4DC,#D2AF9F)}
+#mx .g5{background-image:linear-gradient(165deg,#EAC7B8,#A68B7F)}
+#mx .hint-touch{display:none}
+#mx .reel{cursor:pointer}
+#mx .reel video,#mx .screen video,#mx .back video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+#mx .screen video{z-index:1}
+#mx .screen.has-video .cap,#mx .screen.has-video .side,#mx .screen.has-video .scr-top{display:none}
+#mx .back{overflow:hidden}
+#mx .vid video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000}
+#mx .modal{position:fixed;inset:0;z-index:1000;background:rgba(60,59,57,.82);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:24px}
+#mx .modal.open{display:flex}
+#mx .modal-box{position:relative;height:min(86vh,820px);aspect-ratio:9/16;max-width:100%;border-radius:24px;overflow:hidden;background:#000;box-shadow:0 40px 80px rgba(0,0,0,.4)}
+#mx .modal-box video,#mx .modal-box iframe{width:100%;height:100%;display:block;border:0;object-fit:contain}
+#mx .modal-x{position:absolute;top:18px;right:18px;width:44px;height:44px;border-radius:50%;border:0;background:var(--white);cursor:pointer;font:700 22px/1 var(--sans);color:var(--ink);z-index:2}
+#mx .modal-cap{position:absolute;left:0;right:0;bottom:22px;text-align:center;color:#fff;font-weight:800;font-size:15px;pointer-events:none}
+
+/* услуги — светлая, строками как в журнале */
+#mx .svc{border-top:1px solid var(--line)}
+#mx .row{display:grid;grid-template-columns:72px 1fr 1fr auto;gap:32px;align-items:center;padding:34px 18px;border-bottom:1px solid var(--line);transition:background .3s ease}
+#mx .row:hover{background:var(--powder)}
+#mx .row .tr{font-size:12px;font-weight:800;color:var(--mocha);background:var(--powder);border-radius:8px;padding:6px 0;text-align:center;width:52px;transition:background .3s}
+#mx .row:hover .tr{background:var(--white)}
+#mx .row h3{font-family:var(--serif);font-weight:500;font-size:clamp(30px,3vw,42px);line-height:1.02}
+#mx .row p{color:var(--muted);font-size:16px;max-width:42ch}
+#mx .row .pr{font-family:var(--serif);font-size:30px;white-space:nowrap;text-align:right;color:var(--mocha)}
+
+/* цифры */
+#mx .nums{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+#mx .num{background:var(--white);border:1px solid var(--line);border-radius:24px;padding:30px 26px}
+#mx .num b{display:block;white-space:nowrap;font-family:var(--serif);font-weight:500;font-size:clamp(44px,4.6vw,68px);line-height:1;letter-spacing:-.02em}
+#mx .num b em{font-style:italic;color:var(--mocha)}
+#mx .num span{display:block;color:var(--muted);margin-top:14px;font-size:15px;max-width:24ch}
+#mx .num:first-child{background:var(--peach);border-color:transparent}
+#mx .num:first-child span{color:#5E4B44}
+
+/* кейсы */
+#mx .cases{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+#mx .case{background:var(--white);border:1px solid var(--line);border-radius:30px;padding:14px;display:flex;flex-direction:column}
+#mx .vid{position:relative;aspect-ratio:4/3;border-radius:20px;overflow:hidden;background-size:cover;background-position:center;border:0;cursor:pointer;width:100%;display:block;font:inherit}
+#mx .vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+#mx .play{position:absolute;left:50%;top:50%;width:72px;height:72px;margin:-36px 0 0 -36px;border-radius:50%;background:rgba(255,255,255,.92);display:grid;place-items:center;transition:transform .2s ease}
+#mx .play::after{content:"";margin-left:5px;border-left:18px solid var(--mocha);border-top:11px solid transparent;border-bottom:11px solid transparent}
+#mx .vid:hover .play{transform:scale(1.08)}
+#mx .case-b{padding:24px 14px 12px}
+#mx .tag{display:inline-block;font-size:12px;font-weight:800;color:var(--mocha);background:var(--powder);border-radius:999px;padding:4px 12px;margin-bottom:14px}
+#mx .case h3{font-family:var(--serif);font-weight:500;font-size:38px;line-height:1}
+#mx .case .d{color:var(--muted);margin:10px 0 24px}
+#mx .res{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;border-top:1px solid var(--line);padding-top:18px}
+#mx .res b{display:block;font-family:var(--serif);font-size:34px;font-weight:500;line-height:1.1}
+#mx .res span{color:var(--muted);font-size:14px}
+
+/* пакеты */
+#mx .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:stretch}
+#mx .plan{position:relative;background:var(--white);border:1px solid var(--line);border-radius:30px;padding:36px 32px;display:flex;flex-direction:column}
+#mx .plan h3{font-family:var(--serif);font-weight:500;font-size:36px;line-height:1}
+#mx .plan .for{color:var(--muted);font-size:15px;margin-top:8px}
+#mx .plan .sum{font-family:var(--serif);font-size:clamp(44px,4.4vw,60px);line-height:1;margin:30px 0 28px;letter-spacing:-.01em}
+#mx .plan .sum small{font-family:var(--sans);font-size:15px;color:var(--muted)}
+#mx .plan ul{list-style:none;display:grid;gap:12px;align-content:start;flex:1;margin-top:28px;padding-top:24px;border-top:1px solid var(--line)}
+#mx .plan li{padding-left:24px;position:relative}
+#mx .plan li::before{content:"";position:absolute;left:0;top:.55em;width:8px;height:8px;border-radius:50%;background:var(--peach);box-shadow:0 0 0 1px var(--taupe)}
+#mx .plan.top{background:var(--mocha);color:var(--white);border-color:transparent;box-shadow:0 30px 60px rgba(108,89,82,.25)}
+#mx .plan.top .for,#mx .plan.top .sum small{color:#F1DCD3}
+#mx .plan.top ul{border-color:rgba(251,228,220,.2)}
+#mx .plan.top li::before{box-shadow:none}
+#mx .gift{position:absolute;top:-13px;left:32px;background:var(--peach);color:var(--ink);border-radius:999px;padding:5px 14px;font-size:12px;font-weight:800}
+#mx .one{margin-top:22px;background:var(--white);border:1px solid var(--line);border-radius:30px;padding:16px 36px}
+#mx .one h4{display:flex;align-items:center;gap:12px;font-family:var(--serif);font-weight:500;font-size:28px;padding:28px 0 6px}
+#mx .one h4::before{content:"";flex:none;width:22px;height:22px;border-radius:7px;background:var(--powder);box-shadow:inset 0 0 0 1px var(--line)}
+#mx .li{display:grid;grid-template-columns:1fr auto;gap:2px 24px;padding:18px 0;border-bottom:1px solid var(--line);align-items:center}
+#mx .li:last-child{border-bottom:0}
+#mx .li b{font-weight:800}
+#mx .li span{color:var(--muted);font-size:15px;grid-column:1}
+#mx .li .p{font-family:var(--serif);font-size:26px;white-space:nowrap;grid-row:1/3;grid-column:2;text-align:right;color:var(--mocha)}
+#mx .li .p s{font-size:20px;color:var(--taupe);margin-right:8px}
+#mx .li .p.ask{font-family:var(--sans);font-size:15px;font-weight:700;white-space:normal;max-width:16ch}
+#mx .li .p small{display:block;font-family:var(--sans);font-size:12px;line-height:1.3;color:var(--muted);white-space:normal;max-width:16ch;margin-left:auto}
+#mx .terms{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+#mx .terms span{font-size:14px;font-weight:700;color:var(--mocha);background:var(--powder);border-radius:999px;padding:8px 16px}
+
+/* шаги на таймлайне */
+#mx .steps{position:relative;display:grid;grid-template-columns:repeat(4,1fr);gap:28px;padding-top:44px}
+#mx .steps::before{content:"";position:absolute;top:8px;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--peach),var(--taupe));border-radius:2px}
+#mx .step{position:relative}
+#mx .step::before{content:"";position:absolute;top:-44px;left:0;width:18px;height:18px;border-radius:50%;background:var(--white);border:2px solid var(--taupe)}
+#mx .step:last-child::before{background:var(--mocha);border-color:var(--mocha)}
+#mx .step small{color:var(--mocha);font-weight:800;font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+#mx .step h3{font-family:var(--serif);font-weight:500;font-size:30px;line-height:1.05;margin:8px 0 10px}
+#mx .step p{color:var(--muted);font-size:15px}
+
+/* вопросы */
+#mx .faq{border-top:1px solid var(--line)}
+#mx details{border-bottom:1px solid var(--line)}
+#mx summary{cursor:pointer;list-style:none;padding:28px 64px 28px 0;font-family:var(--serif);font-weight:500;font-size:clamp(24px,2.6vw,32px);line-height:1.15;position:relative}
+#mx summary::-webkit-details-marker{display:none}
+#mx summary::after{content:"";position:absolute;right:0;top:50%;width:40px;height:40px;margin-top:-20px;border-radius:50%;background:linear-gradient(var(--mocha),var(--mocha)) center/14px 1.5px no-repeat,linear-gradient(var(--mocha),var(--mocha)) center/1.5px 14px no-repeat,var(--powder);transition:transform .3s ease,background-color .3s}
+#mx details[open] summary::after{transform:rotate(45deg)}
+#mx details p{color:var(--muted);padding:0 0 28px;max-width:64ch}
+
+/* финал */
+#mx .final{background:var(--peach);color:var(--ink);border-radius:40px;padding:96px 56px;position:relative;overflow:hidden}
+#mx .final h2{font-family:var(--serif);font-weight:500;font-size:clamp(44px,6.6vw,96px);line-height:.98;letter-spacing:-.02em;max-width:13ch;position:relative}
+#mx .final h2 mark{background:var(--white)}
+#mx .final p{color:#5E4B44;max-width:40ch;margin:28px 0 40px;position:relative}
+#mx .final .btn{position:relative}
+#mx .final .deco{position:absolute;right:-60px;top:50%;width:420px;height:420px;margin-top:-210px;border-radius:50%;border:1px solid rgba(108,89,82,.18)}
+#mx .final .deco::before{content:"";position:absolute;inset:60px;border-radius:50%;border:1px solid rgba(108,89,82,.14)}
+#mx .final .deco::after{content:"";position:absolute;left:50%;top:-6px;width:12px;height:12px;margin-left:-6px;border-radius:50%;background:var(--mocha);transform-origin:6px 216px;animation:mxOrbit 14s linear infinite}
+@keyframes mxOrbit{to{transform:rotate(360deg)}}
+#mx .foot{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:40px;padding:64px 0 32px}
+#mx .foot h4{font-size:12px;font-weight:800;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px}
+#mx .foot a{display:block;margin-bottom:6px;font-weight:700}
+#mx .foot a:hover{color:var(--mocha)}
+#mx .copy{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;border-top:1px solid var(--line);padding:22px 0 36px;color:var(--muted);font-size:13px}
+
+/* обо мне */
+#mx .about{display:grid;grid-template-columns:.8fr 1.2fr;gap:56px;align-items:center}
+#mx .photo{position:relative;aspect-ratio:4/5;border-radius:32px;overflow:hidden;background:linear-gradient(165deg,var(--powder),var(--peach) 55%,var(--taupe));background-size:cover;background-position:center}
+#mx .photo .ph-note{position:absolute;inset:auto 18px 18px 18px;background:rgba(255,255,255,.9);border-radius:16px;padding:12px 16px;font-size:13px;font-weight:700;color:var(--muted)}
+#mx .photo .cap2{position:absolute;top:18px;left:18px;background:var(--white);border-radius:8px;padding:5px 12px;font-weight:800;font-size:15px}
+#mx .about .lead{font-family:var(--serif);font-size:clamp(26px,2.6vw,36px);line-height:1.2;margin:0 0 28px}
+#mx .facts{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+#mx .fact{border:1px solid var(--line);border-radius:22px;padding:22px}
+#mx .fact b{display:block;font-family:var(--serif);font-weight:500;font-size:28px;line-height:1.05;margin-bottom:8px}
+#mx .fact b em{font-style:italic;color:var(--mocha)}
+#mx .fact span{color:var(--muted);font-size:15px;display:block}
+#mx .fact:first-child{background:var(--peach);border-color:transparent}
+#mx .fact:first-child span{color:#5E4B44}
+
+/* до / после */
+#mx .ba{display:grid;grid-template-columns:minmax(260px,360px) 1fr;gap:22px;align-items:stretch}
+#mx .ba-card{background:var(--white);border:1px solid var(--line);border-radius:30px;padding:14px;display:flex;flex-direction:column}
+#mx .ba-card .vid{aspect-ratio:9/16;max-height:560px}
+#mx .ba-card .lbl{display:flex;justify-content:space-between;align-items:center;padding:16px 8px 6px;font-weight:800;font-size:15px}
+#mx .ba-card .lbl i{font-style:normal;font-size:12px;color:var(--mocha);background:var(--powder);border-radius:999px;padding:4px 12px}
+#mx .ba-card.after{border-color:var(--taupe);box-shadow:0 24px 50px rgba(108,89,82,.14)}
+#mx .ba-card.after .lbl i{background:var(--peach)}
+#mx .ba-list{background:var(--powder);border-radius:30px;padding:36px 32px;display:flex;flex-direction:column}
+#mx .ba-list h3{font-family:var(--serif);font-weight:500;font-size:34px;line-height:1.05;margin-bottom:22px}
+#mx .ba-list ol{list-style:none;counter-reset:b;display:grid;gap:18px;flex:1}
+#mx .ba-list li{position:relative;padding-left:84px;min-height:32px}
+#mx .ba-list li .tc{position:absolute;left:0;top:0;font-style:normal;font-weight:800;font-size:13px;color:var(--mocha);background:var(--white);border-radius:8px;padding:5px 9px}
+#mx .ba-list li b{display:block}
+#mx .ba-list li span{color:#6A5750;font-size:15px}
+#mx .ba-list .btn{margin-top:28px;align-self:flex-start}
+
+/* бесплатный разбор */
+#mx .offer{display:grid;grid-template-columns:auto 1fr auto;gap:32px;align-items:center;border:1px dashed var(--taupe);border-radius:30px;padding:32px 36px;margin-bottom:64px;background:var(--white)}
+#mx .offer .ic{width:76px;height:76px;border-radius:22px;background:var(--peach);display:grid;place-items:center;font-family:var(--serif);font-size:26px;font-style:italic;white-space:nowrap}
+#mx .offer h3{font-family:var(--serif);font-weight:500;font-size:clamp(28px,2.8vw,38px);line-height:1.05;margin-bottom:6px}
+#mx .offer p{color:var(--muted);max-width:56ch}
+#mx .reel .tg{position:absolute;top:14px;left:14px;z-index:2;background:rgba(255,255,255,.9);color:var(--mocha);border-radius:999px;padding:3px 10px;font-size:11px;font-weight:800}
+
+/* адаптив */
+@media (max-width:1000px){
+  #mx .links{display:none}
+  #mx .hero{grid-template-columns:1fr}
+  #mx .stage{max-width:520px;margin:20px auto 0;width:100%}
+  #mx .row{grid-template-columns:60px 1fr auto}
+  #mx .row p{grid-column:2/4;grid-row:2}
+  #mx .nums{grid-template-columns:1fr 1fr}
+  #mx .cases,#mx .plans{grid-template-columns:1fr}
+  #mx .plans{gap:28px}
+  #mx .steps{grid-template-columns:1fr 1fr;row-gap:56px}
+  #mx .about{grid-template-columns:1fr;gap:32px}
+  #mx .photo{max-width:420px;aspect-ratio:1/1}
+  #mx .ba{grid-template-columns:1fr}
+  #mx .ba-card{max-width:360px;width:100%;margin:0 auto}
+  #mx .offer{grid-template-columns:auto 1fr}
+  #mx .offer .btn{grid-column:1/3;justify-self:start}
+}
+@media (max-width:620px){
+  #mx{font-size:16px}
+  #mx section{padding:80px 0}
+  #mx .w{padding:0 20px}
+  #mx .nav .btn{padding:10px 16px;font-size:14px}
+  #mx .hero p{font-size:17px}
+  #mx .proof{column-gap:14px}
+  #mx .proof > div + div{padding-left:14px}
+  #mx .proof b{font-size:21px;white-space:nowrap}
+  #mx .proof{grid-template-columns:repeat(3,1fr);max-width:none}
+  #mx .proof{font-size:13px}
+  #mx .stage{height:540px}
+  #mx .blob{width:380px;height:380px;margin:-190px 0 0 -190px}
+  #mx .phone{width:250px;height:520px;margin-left:-125px;border-radius:40px}
+  #mx .screen{border-radius:31px}
+  #mx .back{width:160px;top:90px;border-width:4px}
+  #mx .back.l{left:0} #mx .back.r{right:0}
+  #mx .chip{font-size:12px;padding:7px 12px}
+  #mx .chip.a{left:-6px;top:96px} #mx .chip.b{right:-6px;top:214px} #mx .chip.c{display:none}
+  #mx .cap{bottom:120px} #mx .cap span{font-size:16px} #mx .side{bottom:120px}
+  #mx .ticker{margin-top:56px;padding:18px 0}
+  #mx .reel{width:180px}
+  #mx .row{grid-template-columns:1fr auto;gap:10px 20px;padding:26px 4px}
+  #mx .row:hover{background:none}
+  #mx .row .tr{display:none}
+  #mx .row p{grid-column:1/3}
+  #mx .row .pr{font-size:24px}
+  #mx .nums{grid-template-columns:1fr 1fr;gap:10px}
+  #mx .num{padding:22px 18px;border-radius:20px}
+  #mx .num b{font-size:40px}
+  #mx .num span{font-size:14px}
+  #mx .case h3{font-size:32px}
+  #mx .res b{font-size:28px}
+  #mx .res span{font-size:12px}
+  #mx .plan{padding:32px 24px}
+  #mx .steps{grid-template-columns:1fr;padding-top:0;padding-left:38px;row-gap:40px}
+  #mx .steps::before{top:0;bottom:0;left:8px;right:auto;width:2px;height:auto;background:linear-gradient(180deg,var(--peach),var(--taupe))}
+  #mx .step::before{top:6px;left:-38px}
+  #mx summary::after{width:34px;height:34px;margin-top:-17px}
+  #mx summary{padding-right:52px}
+  #mx .final{padding:60px 24px;border-radius:28px}
+  #mx .final .deco{width:260px;height:260px;right:-120px;top:auto;bottom:-80px;margin:0}
+  #mx .final .deco::after{transform-origin:6px 136px}
+  #mx .foot{grid-template-columns:1fr 1fr;gap:28px}
+  #mx .foot > div:first-child{grid-column:1/3}
+  #mx .one{padding:8px 20px}
+  #mx .li .p{font-size:22px}
+  #mx .li-ask{grid-template-columns:1fr}
+  #mx .li-ask .p{grid-row:auto;grid-column:1;text-align:left;max-width:none;margin-top:6px;font-size:14px}
+  #mx .facts{grid-template-columns:1fr}
+  #mx .fact{padding:18px}
+  #mx .ba{gap:10px}
+  #mx .ba-card{padding:8px;border-radius:22px}
+  #mx .ba-card .vid{border-radius:16px}
+  #mx .ba-list li{padding-left:72px}
+  #mx .ba-list{padding:28px 22px}
+  #mx .offer{grid-template-columns:1fr;padding:26px 22px;gap:18px}
+  #mx .offer .btn{grid-column:auto}
+}
+/* на телефонах лента не едет сама — её листают пальцем */
+@media (hover:none){
+  #mx .mq{overflow-x:auto;-webkit-mask-image:none;mask-image:none;scroll-snap-type:x mandatory;scrollbar-width:none}
+  #mx .mq::-webkit-scrollbar{display:none}
+  #mx .mq-track{animation:none;padding:8px 20px 12px}
+  #mx .mq-track [aria-hidden="true"]{display:none}
+  #mx .reel{scroll-snap-align:start;scroll-margin-left:20px}
+  #mx .hint-hover{display:none}
+  #mx .hint-touch{display:inline}
+}
+@media (prefers-reduced-motion:reduce){
+  #mx *{animation:none!important;transition:none!important}
+  #mx .mq,#mx .ticker{overflow-x:auto}
+}
+</style>
+
+<div id="mx">
+  <div class="w">
+    <nav class="nav">
+      <a class="logo" href="#mx-top">Мария<small>монтаж видео</small></a>
+      <div class="links">
+        <a href="#mx-works">Работы</a>
+        <a href="#mx-about">Обо мне</a>
+        <a href="#mx-pricing">Цены</a>
+        <a href="#mx-faq">Вопросы</a>
+      </div>
+      <a class="btn btn-line" href="https://t.me/NMaria_Sergeevna" target="_blank" rel="noopener">Обсудить проект</a>
+    </nav>
+
+    <header class="hero" id="mx-top">
+      <div>
+        <span class="badge"><span class="rec"></span>Беру новые проекты</span>
+        <h1>Монтаж, который <mark>досматривают</mark> до&nbsp;конца</h1>
+        <p>Reels, Shorts, TikTok и YouTube для блогеров и экспертов. Цепляющий хук, ритм, субтитры и звук — вы снимаете, остальное беру на себя.</p>
+        <div class="acts">
+          <a class="btn btn-ink" href="https://t.me/NMaria_Sergeevna" target="_blank" rel="noopener">Написать в Telegram <span class="arr">→</span></a>
+          <a class="txt" href="#mx-pricing">Смотреть цены</a>
+        </div>
+        <div class="proof">
+          <div><b>24–48&nbsp;ч</b>на готовый рилс</div>
+          <div><b>2</b>круга правок включены</div>
+          <div><b>от&nbsp;1&nbsp;500&nbsp;₽</b>за ролик</div>
+        </div>
+      </div>
+      <div class="stage" aria-hidden="true">
+        <div class="blob"></div>
+        <div class="back l g4" data-v="1"></div>
+        <div class="back r g2" data-v="2"></div>
+        <div class="phone">
+          <div class="screen" data-v="0">
+            <div class="prog"><i></i></div>
+            <div class="scr-top"><span>Reels</span><span>●●●</span></div>
+            <div class="cap"><span>Переехала в Таиланд</span><span>и вот что поняла</span></div>
+            <div class="side"><i></i><i></i><i></i></div>
+            <div class="who"><b>Мария</b><span>Снимаю и монтирую сама</span></div>
+          </div>
+        </div>
+        <span class="chip a">Хук в первые 3 секунды</span>
+        <span class="chip b">Субтитры в стиле блога</span>
+        <span class="chip c">Звук и ритм</span>
+      </div>
+    </header>
+  </div>
+
+  <div class="ticker" aria-hidden="true"><div class="ticker-track" id="mx-ticker"></div></div>
+
+  <section class="works grain" id="mx-works">
+    <div class="w">
+      <div class="head"><div><span class="kicker">Работы</span><h2 class="h2">Мои <mark>ролики</mark></h2></div><p>Ролики с&nbsp;моих каналов о&nbsp;Таиланде и&nbsp;фитнесе. <span class="hint-hover">Наведите, чтобы остановить ленту. </span><span class="hint-touch">Листайте ленту вбок. </span>Нажмите на&nbsp;ролик, чтобы посмотреть его со&nbsp;звуком.</p></div>
+    </div>
+    <div class="mq"><div class="mq-track" id="mx-mq"></div></div>
+  </section>
+
+  <section id="mx-services">
+    <div class="w">
+      <div class="head"><div><span class="kicker">Услуги</span><h2 class="h2">Что я&nbsp;делаю для&nbsp;вас</h2></div><p>От монтажа одного рилс до готового контента на&nbsp;месяц с&nbsp;автоответами в&nbsp;директ.</p></div>
+      <div class="svc">
+        <div class="row"><span class="tr">V1</span><h3>Короткие ролики</h3><p>Reels, Shorts и TikTok, которые цепляют в&nbsp;первые секунды. Субтитры, музыка, звуковые акценты.</p><div class="pr">от&nbsp;1&nbsp;500&nbsp;₽</div></div>
+        <div class="row"><span class="tr">V2</span><h3>Длинные видео для&nbsp;YouTube</h3><p>Влоги, интервью, подкасты. Держу темп до&nbsp;последней минуты. Нарезка рилс из&nbsp;выпуска — отдельно.</p><div class="pr">от&nbsp;4&nbsp;000&nbsp;₽</div></div>
+        <div class="row"><span class="tr">T1</span><h3>Контент для&nbsp;охватов</h3><p>Хуки, сценарии, что говорить в&nbsp;кадре, лид-магнит, описание, название и&nbsp;хештеги.</p><div class="pr">от&nbsp;1&nbsp;000&nbsp;₽</div></div>
+        <div class="row"><span class="tr">FX</span><h3>Автоответы в&nbsp;Instagram</h3><p>Слово в&nbsp;комментарии — и&nbsp;человек получает в&nbsp;директ ваш гайд или прайс.</p><div class="pr">от&nbsp;3&nbsp;000&nbsp;₽</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="mx-about" style="padding-top:0">
+    <div class="w">
+      <div class="about">
+        <div class="photo" role="img" aria-label="Мария" style="background-image:url(videos/about.jpg);background-position:center 30%"><span class="cap2">Привет, я Мария</span></div>
+        <div>
+          <span class="kicker">Обо мне</span>
+          <p class="lead">14&nbsp;лет в&nbsp;монтаже. Сейчас снимаю и&nbsp;монтирую свои ролики — о&nbsp;жизни в&nbsp;Таиланде и&nbsp;о&nbsp;фитнесе. По&nbsp;ним видно, как я&nbsp;работаю с&nbsp;ритмом, звуком и&nbsp;субтитрами.</p>
+          <div class="facts">
+            <div class="fact"><b>14 <em>лет</em></b><span>в монтаже — начинала в&nbsp;Sony Vegas</span></div>
+            <div class="fact"><b>Сценарии и&nbsp;хуки</b><span>помогаю не&nbsp;только смонтировать, но&nbsp;и&nbsp;придумать, что сказать</span></div>
+            <div class="fact"><b>AI-видео</b><span>делаю ролики с&nbsp;кадрами из&nbsp;нейросетей — примеры покажу по&nbsp;запросу</span></div>
+            <div class="fact"><b>Свои ролики</b><span>сама снимаю и&nbsp;монтирую — путешествия и&nbsp;фитнес</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- РАЗБОР РОЛИКА: ролик «Крабовые палочки», таймкоды по нему -->
+  <section id="mx-ba" style="padding-top:0">
+    <div class="w">
+      <div class="head"><div><span class="kicker">Разбор</span><h2 class="h2">Как собран <mark>рилс</mark></h2></div><p>Один мой ролик по&nbsp;секундам: что происходит в&nbsp;кадре и&nbsp;зачем это нужно.</p></div>
+      <div class="ba">
+        <div class="ba-card after">
+          <button class="vid g0" data-src="videos/crab.mp4" data-poster="videos/crab-cover.jpg" aria-label="Смотреть ролик"><span class="play"></span></button>
+          <div class="lbl">Готовый рилс <i>32 сек</i></div>
+        </div>
+        <div class="ba-list">
+          <h3>Что внутри</h3>
+          <ol>
+            <li><i class="tc">00:00</i><b>Хук</b><span>С&nbsp;первой секунды крупно «креветка» на&nbsp;вилке — хочется досмотреть, что внутри</span></li>
+            <li><i class="tc">00:01</i><b>Субтитры</b><span>По&nbsp;одному слову в&nbsp;центре кадра — не&nbsp;закрывают еду и&nbsp;читаются без звука</span></li>
+            <li><i class="tc">00:08</i><b>Перебивка</b><span>Витрина с&nbsp;ценниками — доказательство, что продали не&nbsp;то, что обещали</span></li>
+            <li><i class="tc">00:12</i><b>Рассказ в&nbsp;кадре</b><span>Живая реакция и&nbsp;история от&nbsp;первого лица — на&nbsp;ней держится доверие</span></li>
+            <li><i class="tc">00:31</i><b>Обложка</b><span>Финальный кадр с&nbsp;заголовком — он&nbsp;же обложка в&nbsp;ленте профиля</span></li>
+          </ol>
+          <a class="btn btn-ink" href="https://t.me/NMaria_Sergeevna" target="_blank" rel="noopener">Хочу так же <span class="arr">→</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="mx-pricing" style="padding-top:0">
+    <div class="w">
+      <div class="offer">
+        <div class="ic">0&nbsp;₽</div>
+        <div><h3>Бесплатный разбор вашего рилс</h3><p>Пришлите ссылку на&nbsp;любой свой ролик — подскажу, что поправить в&nbsp;хуке, ритме и&nbsp;субтитрах. Бесплатно и&nbsp;без обязательств.</p></div>
+        <a class="btn btn-ink" href="https://t.me/NMaria_Sergeevna" target="_blank" rel="noopener">Прислать ролик <span class="arr">→</span></a>
+      </div>
+      <div class="head"><div><span class="kicker">Цены</span><h2 class="h2">Пакеты на&nbsp;месяц</h2></div><p>Для тех, кто публикуется регулярно. Выходит дешевле разовых заказов.</p></div>
+      <div class="plans">
+        <div class="plan">
+          <h3>Базовый</h3><div class="for">Старт регулярного контента</div>
+          <div class="sum">10&nbsp;000&nbsp;₽<small> / мес</small></div>
+          <a class="btn btn-line" href="https://t.me/NMaria_Sergeevna" target="_blank" rel="noopener">Выбрать «Базовый»</a>
+          <ul><li>8 рилс</li><li>Субтитры и музыка</li><li>2 круга правок на ролик</li></ul>
+        </div>
+        <div class="plan">
+          <h3>Стандарт</h3><div class="for">Рилс через день и&nbsp;длинные видео</div>
+          <div class="sum">25&nbsp;000&nbsp;₽<small> / мес</small></div>
+          <a class="btn btn-line" href="https://t.me/NMaria_Sergeevna" target="_blank" rel="noopener">Выбрать «Стандарт»</a>
+          <ul><li>16 рилс</li><li>2 длинных видео для YouTube до 10 минут</li><li>Субтитры и музыка</li><li>2 круга правок на ролик</li></ul>
+        </div>
+        <div class="plan top">
+          <span class="gift">Автоответ в подарок</span>
+          <h3>Максимум</h3><div class="for">Готовый контент на&nbsp;каждый день</div>
+          <div class="sum">75&nbsp;000&nbsp;₽<small> / мес</small></div>
+          <a class="btn btn-peach" href="https://t.me/NMaria_Sergeevna" target="_blank" rel="noopener">Выбрать «Максимум»</a>
+          <ul><li>30 рилс</li><li>4 длинных видео для YouTube до 10 минут</li><li>Упаковка каждого ролика: хук, описание, хештеги</li><li>Настройка автоответа в Instagram</li><li>2 круга правок на ролик</li></ul>
+        </div>
+      </div>
+
+      <div class="one">
+        <h4>Разовые заказы</h4>
+        <div class="li"><b>Рилс, Shorts или TikTok до 60 секунд</b><span>Субтитры, музыка, эффекты. 24–48 часов</span><div class="p">1&nbsp;500&nbsp;₽</div></div>
+        <div class="li"><b>Нарезка 3 рилс из длинного видео</b><span>Из подкаста, эфира или интервью. 2 дня</span><div class="p">3&nbsp;500&nbsp;₽</div></div>
+        <div class="li"><b>Длинное видео для YouTube до 10 минут</b><span>Каждая следующая минута — 300 ₽. 3 дня</span><div class="p">4&nbsp;000&nbsp;₽</div></div>
+        <div class="li"><b>AI-ролик</b><span>Генерация кадров в нейросетях и монтаж. 3 дня. Примеры пришлю в Telegram</span><div class="p">от&nbsp;3&nbsp;000&nbsp;₽</div></div>
+        <h4>Контент для охватов</h4>
+        <div class="li"><b>Упаковка рилс</b><span>Хук, призыв и лид-магнит, название, описание, хештеги</span><div class="p">1&nbsp;000&nbsp;₽</div></div>
+        <div class="li"><b>Сценарий рилс</b><span>Всё из упаковки плюс что говорить в кадре по секундам</span><div class="p">2&nbsp;000&nbsp;₽</div></div>
+        <div class="li"><b>Рилс под ключ</b><span>Сценарий и монтаж вместе</span><div class="p"><s>3 500</s>3&nbsp;000&nbsp;₽</div></div>
+        <h4>Автоответы в Instagram</h4>
+        <div class="li"><b>Автоответ под ключ</b><span>1 ключевое слово, текст, ссылка, проверка</span><div class="p">3&nbsp;000&nbsp;₽</div></div>
+        <div class="li"><b>Автоворонка</b><span>2–3 сценария: комментарии, сообщения, запрос прайса</span><div class="p">7&nbsp;000&nbsp;₽<small>подписку на сервис оплачиваете вы</small></div></div>
+        <h4>Дополнительно к ролику</h4>
+        <div class="li"><b>Фирменный стиль субтитров</b><span>Свой шрифт, цвета, анимация слов, логотип. Делаю один раз — дальше во всех роликах бесплатно</span><div class="p">1&nbsp;000&nbsp;₽<small>один раз</small></div></div>
+        <div class="li"><b>Моушн-графика</b><span>Инфографика, плашки, стрелки, анимированный текст</span><div class="p">+1&nbsp;000&nbsp;₽<small>сложная — по договорённости</small></div></div>
+        <div class="li li-ask"><b>Платная музыка</b><span>Подбор музыки входит в монтаж. Если нужен трек из платной библиотеки — лицензию покупаете вы, на своё имя</span><div class="p ask">по стоимости лицензии</div></div>
+        <div class="li"><b>Обложка для YouTube</b><span>Превью 1280×720 для длинного видео</span><div class="p">1&nbsp;000&nbsp;₽</div></div>
+        <div class="li"><b>Обложка для рилс</b><span>Кадр и заголовок для ленты профиля</span><div class="p">500&nbsp;₽</div></div>
+        <div class="li li-ask"><b>Сложная цветокоррекция</b><span>Цвет под единый стиль, выравнивание разных камер. Базовая входит в любой ролик</span><div class="p ask">по договорённости</div></div>
+        <div class="li li-ask"><b>Сложная чистка звука</b><span>Шум, эхо, ветер, разная громкость голосов. Базовая входит в любой ролик</span><div class="p ask">по договорённости</div></div>
+        <div class="li li-ask"><b>Адаптация под второй формат</b><span>Горизонтальное видео в вертикальное или наоборот</span><div class="p ask">по договорённости</div></div>
+      </div>
+      <div class="terms"><span>2 круга правок включены</span><span>Следующий круг — 300 ₽</span><span>Предоплата 50% для первого заказа</span></div>
+    </div>
+  </section>
+
+  <section style="padding-top:0">
+    <div class="w">
+      <div class="head"><div><span class="kicker">Процесс</span><h2 class="h2">Как проходит работа</h2></div></div>
+      <div class="steps">
+        <div class="step"><small>Шаг 1</small><h3>Обсуждаем задачу</h3><p>Вы пишете в Telegram, я уточняю стиль, примеры и сроки.</p></div>
+        <div class="step"><small>Шаг 2</small><h3>Присылаете исходники</h3><p>Ссылкой на облако. Для первого заказа — предоплата 50%.</p></div>
+        <div class="step"><small>Шаг 3</small><h3>Получаете черновик</h3><p>Рилс — через 24–48 часов, длинное видео — через 3&nbsp;дня.</p></div>
+        <div class="step"><small>Шаг 4</small><h3>Готовый ролик</h3><p>Два круга правок включены, отдаю файл под нужную площадку.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="mx-faq" style="padding-top:0">
+    <div class="w">
+      <div class="head"><div><span class="kicker">Вопросы</span><h2 class="h2">Частые вопросы</h2></div></div>
+      <div class="faq">
+        <details><summary>Для каких площадок вы монтируете?</summary><p>Reels, Shorts и TikTok, а также длинные видео для YouTube: влоги, интервью, подкасты. Каждый ролик собираю под формат конкретной площадки.</p></details>
+        <details><summary>Субтитры, музыка и эффекты входят в цену?</summary><p>Да, в любом ролике есть субтитры, музыка и звуковые акценты. Хуки, описание и хештеги — отдельная услуга «Упаковка рилс» или часть пакета «Максимум».</p></details>
+        <details><summary>Откуда берётся музыка?</summary><p>Подбираю и вставляю в ролик сама — это входит в цену. Беру только музыку, которую можно легально использовать в роликах, поэтому звук не заглушат и охваты не урежут. Хотите трендовый трек из Instagram — добавьте его в приложении при публикации, ролик я смонтирую под него.</p></details>
+        <details><summary>Что, если первый вариант не понравится?</summary><p>В каждый ролик включены два круга правок, каждый следующий — 300 ₽. Перед стартом мы обсуждаем стиль, поэтому обычно хватает одного.</p></details>
+        <details><summary>Нужно ли давать пароль от Instagram для автоответов?</summary><p>Нет. Настраиваю автоответы только через сервисы с официальным подключением Meta — вы даёте доступ сами, пароль мне не нужен.</p></details>
+        <details><summary>Где посмотреть примеры AI-видео?</summary><p>Напишите в&nbsp;Telegram — пришлю готовые AI-ролики и&nbsp;расскажу, что можно сделать под вашу задачу.</p></details>
+        <details><summary>Можно сначала заказать один ролик?</summary><p>Да. Начните с&nbsp;одного рилс — посмотрите, как я&nbsp;работаю, а&nbsp;пакет можно взять потом, если понравится.</p></details>
+        <details><summary>Как оплатить?</summary><p>Переводом на карту. Для первого заказа — предоплата 50%, детали напишу в переписке.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <div class="w">
+    <div class="final grain">
+      <span class="deco" aria-hidden="true"></span>
+      <h2>Давайте смонтируем ваш <mark>следующий</mark> ролик</h2>
+      <p>Напишите, какие видео вам нужны. Отвечу в течение дня и предложу, с чего начать.</p>
+      <a class="btn btn-ink" href="https://t.me/NMaria_Sergeevna" target="_blank" rel="noopener">Написать в Telegram <span class="arr">→</span></a>
+    </div>
+    <footer class="foot">
+      <div><div class="logo">Мария<small>монтаж видео</small></div></div>
+      <div><h4>Связаться</h4><a href="https://t.me/NMaria_Sergeevna" target="_blank" rel="noopener">Telegram</a></div>
+      <div><h4>Разделы</h4><a href="#mx-works">Работы</a><a href="#mx-about">Обо мне</a><a href="#mx-services">Услуги</a><a href="#mx-pricing">Цены</a></div>
+    </footer>
+    <div class="copy"><span>© 2026 Мария</span><span>Монтаж Reels, Shorts, TikTok и YouTube</span></div>
+  </div>
+  <div class="modal" id="mx-modal" role="dialog" aria-modal="true" aria-label="Просмотр ролика">
+    <button class="modal-x" type="button" aria-label="Закрыть">×</button>
+    <div class="modal-box" id="mx-modal-box"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  /* ===== ТВОИ РОЛИКИ =====
+     src    — файл .mp4 из папки videos
+     poster — обложка .jpg
+     tag    — подпись в углу (тема канала), title — название
+     Первые три ролика также показываются в телефоне на первом экране:
+     первый — в центре, второй — слева, третий — справа. */
+  var VIDEOS = [
+    {src:"videos/pattaya-cost.mp4", poster:"videos/pattaya-cost-cover.jpg", tag:"Таиланд", title:"Сколько стоит жизнь в Паттайе"},
+    {src:"videos/steak.mp4",        poster:"videos/steak-cover.jpg",        tag:"Таиланд", title:"Стейк за 79 бат"},
+    {src:"videos/rdl.mp4",          poster:"videos/rdl-cover.jpg",          tag:"Фитнес",  title:"Румынская тяга"},
+    {src:"videos/crab.mp4",         poster:"videos/crab-cover.jpg",         tag:"Таиланд", title:"Нас обманули"},
+    {src:"videos/twoyears.mp4",     poster:"videos/twoyears-cover.jpg",     tag:"Фитнес",  title:"2 года тренировок"},
+    {src:"videos/croc.mp4",         poster:"videos/croc-cover.jpg",         tag:"Таиланд", title:"Впервые пробую крокодила"},
+    {src:"videos/condo.mp4",        poster:"videos/condo-cover.jpg",        tag:"Таиланд", title:"Кондо мечты"},
+    {src:"videos/habit.mp4",        poster:"videos/habit-cover.jpg",        tag:"Фитнес",  title:"Моя привычка"},
+    {src:"videos/sushi.mp4",        poster:"videos/sushi-cover.jpg",        tag:"Таиланд", title:"Роллы в Паттайе"},
+    {src:"videos/emigration.mp4",   poster:"videos/emigration-cover.jpg",   tag:"Таиланд", title:"Продление на 30 дней"}
+  ];
+  var root=document.getElementById('mx'); if(!root) return;
+  var canHover=window.matchMedia&&window.matchMedia('(hover:hover)').matches;
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* беззвучное превью: первый кадр или обложка */
+  function preview(v,autoplay){
+    var el=document.createElement('video');
+    el.muted=true; el.loop=true; el.playsInline=true; el.setAttribute('muted',''); el.setAttribute('playsinline','');
+    el.preload=autoplay?'auto':(v.poster?'none':'metadata');
+    if(v.poster) el.poster=v.poster;
+    el.src=v.src+(v.poster?'':'#t=0.1');
+    if(autoplay&&!reduce){ el.autoplay=true; el.setAttribute('autoplay',''); }
+    return el;
+  }
+
+  /* телефон на первом экране и карточки за ним */
+  root.querySelectorAll('[data-v]').forEach(function(el){
+    var v=VIDEOS[+el.getAttribute('data-v')]; if(!v||!v.src) return;
+    var isScreen=el.classList.contains('screen');
+    el.insertBefore(preview(v,isScreen),el.firstChild);
+    if(isScreen) el.classList.add('has-video');
+  });
+
+  /* окно просмотра — ролик играет прямо на сайте */
+  var modal=document.getElementById('mx-modal'), box=document.getElementById('mx-modal-box');
+  function openVideo(v){
+    if(!v||!v.src) return;
+    box.innerHTML='';
+    var el=document.createElement('video'); el.src=v.src; el.controls=true; el.autoplay=true; el.playsInline=true; el.setAttribute('playsinline','');
+    if(v.poster) el.poster=v.poster;
+    box.appendChild(el); modal.classList.add('open'); document.documentElement.style.overflow='hidden';
+    var p=el.play(); if(p&&p.catch) p.catch(function(){});
+  }
+  function closeVideo(){ modal.classList.remove('open'); box.innerHTML=''; document.documentElement.style.overflow=''; }
+  if(modal){
+    modal.addEventListener('click',function(e){ if(e.target===modal||e.target.classList.contains('modal-x')) closeVideo(); });
+    document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&modal.classList.contains('open')) closeVideo(); });
+  }
+
+  /* бесконечные ленты: набор повторяется, пока не перекроет экран с запасом, затем дублируется целиком — шва не видно */
+  function loop(track, build, speed){
+    if(!track) return;
+    track.innerHTML=''; var set=document.createDocumentFragment(); build(set);
+    track.appendChild(set); var one=track.scrollWidth||1;
+    var need=Math.max(1,Math.ceil((window.innerWidth*1.2)/one)), base=Array.prototype.slice.call(track.children);
+    track.innerHTML='';
+    for(var k=0;k<need*2;k++) base.forEach(function(el){ var c=el.cloneNode(true); if(k>=need) c.setAttribute('aria-hidden','true'); track.appendChild(c); });
+    var kids=track.children, n=kids.length/2;
+    var shift=kids[n].offsetLeft-kids[0].offsetLeft; /* точный сдвиг на один полный набор вместе с отступом */
+    track.style.setProperty('--sh',(-shift)+'px'); track.style.animationDuration=(shift/speed)+'s';
+  }
+  var words=['Reels','Shorts','TikTok','YouTube','Подкасты','AI-видео','Сценарии','Автоворонки'];
+  function buildTicker(f){ words.forEach(function(w){ var s=document.createElement('span'); s.textContent=w; f.appendChild(s); f.appendChild(document.createElement('i')); }); }
+  function buildReels(f){ VIDEOS.forEach(function(v,i){
+    var a=document.createElement('div'); a.className='reel'; a.setAttribute('data-i',i);
+    if(v.src){ a.appendChild(preview(v,false)); a.setAttribute('role','button'); a.setAttribute('tabindex','0'); a.setAttribute('aria-label','Смотреть: '+v.title); }
+    else a.classList.add('g'+(i%6));
+    /* у обложки уже есть свой заголовок — подпись показываем только без обложки */
+    a.insertAdjacentHTML('beforeend',(v.tag?'<span class="tg"></span>':'')+'<span class="pl"></span>'+(v.poster?'':'<span class="t"></span>'));
+    if(v.tag) a.querySelector('.tg').textContent=v.tag;
+    if(!v.poster) a.querySelector('.t').textContent=v.title;
+    f.appendChild(a);
+  }); }
+  var tk=document.getElementById('mx-ticker'), mq=document.getElementById('mx-mq');
+  function build(){ loop(tk,buildTicker,60); loop(mq,buildReels,40); }
+  build();
+  var lastW=window.innerWidth;
+  window.addEventListener('resize',function(){ if(Math.abs(window.innerWidth-lastW)>80){ lastW=window.innerWidth; build(); } });
+  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(build);
+
+  if(mq){
+    function reelOf(e){ var r=e.target.closest&&e.target.closest('.reel'); return r&&mq.contains(r)?r:null; }
+    mq.addEventListener('click',function(e){ var r=reelOf(e); if(r) openVideo(VIDEOS[+r.getAttribute('data-i')]); });
+    mq.addEventListener('keydown',function(e){ var r=reelOf(e); if(r&&(e.key==='Enter'||e.key===' ')){ e.preventDefault(); openVideo(VIDEOS[+r.getAttribute('data-i')]); } });
+    if(canHover){ /* при наведении превью оживает без звука */
+      mq.addEventListener('mouseover',function(e){ var r=reelOf(e), v=r&&r.querySelector('video'); if(v){ var p=v.play(); if(p&&p.catch) p.catch(function(){}); } });
+      mq.addEventListener('mouseout',function(e){ var r=reelOf(e), v=r&&r.querySelector('video'); if(v&&!r.contains(e.relatedTarget)) v.pause(); });
+    }
+  }
+
+  /* ролик в «Как собран рилс» — играет на месте */
+  root.querySelectorAll('.vid').forEach(function(c){
+    var src=(c.getAttribute('data-src')||'').trim(), poster=(c.getAttribute('data-poster')||'').trim();
+    if(poster) c.style.backgroundImage='url('+poster+')';
+    c.addEventListener('click',function(){
+      if(!src||c.querySelector('video')) return;
+      var el=document.createElement('video'); el.src=src; el.controls=true; el.autoplay=true; el.playsInline=true; el.setAttribute('playsinline','');
+      c.innerHTML=''; c.appendChild(el); var p=el.play(); if(p&&p.catch) p.catch(function(){});
+    });
+  });
+})();
+</script>
+</body>
+</html>
